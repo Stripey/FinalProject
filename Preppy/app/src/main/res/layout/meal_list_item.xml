@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:id="@+id/meal_list_item_relative">
+
+    <TextView
+        android:id="@+id/meal_list_item"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:text = "Sample Meal"
+        android:textAlignment="center"
+        android:gravity="center"
+        android:textSize="20sp"
+        />
+
+</RelativeLayout>
