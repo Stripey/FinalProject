@@ -30,15 +30,15 @@ public class PreppyProvider extends ContentProvider {
     public final static String TABLE_MEAL = "Meal";
     public final static String NAME = "NAME"; // integer
     public final static String LENGTH_IN_DAYS = "LENGTH_IN_DAYS"; // float
-    public final static String INGREDIENTS_JSON = "INGREDIENTS_JSON"; // string, json
-    private final static String CSV_SCHEMA = NAME + "," + LENGTH_IN_DAYS + "," + INGREDIENTS_JSON + "\n";
+    public final static String INGREDIENTS = "INGREDIENTS"; // string
+    private final static String CSV_SCHEMA = NAME + "," + LENGTH_IN_DAYS + "," + INGREDIENTS + "\n";
 
     private static final String SQL_CREATE_MAIN =
       "CREATE TABLE " + TABLE_MEAL + "( " +
         "_ID INTEGER PRIMARY KEY, " +
         NAME + " INTEGER, " +
         LENGTH_IN_DAYS + " FLOAT, " +
-        INGREDIENTS_JSON + " TIME " +
+        INGREDIENTS + " TIME " +
         ")";
 
     // lesson 10 helper impl
@@ -137,7 +137,7 @@ public class PreppyProvider extends ContentProvider {
             do {
                 String row_name = c.getString(1);
                 String row_length_in_days = c.getString(2);
-                String row_ingredients_json = c.getString(3);
+                String row_ingredients = c.getString(3);
 
                 csv_sb
                   .append(row_name)
@@ -145,7 +145,7 @@ public class PreppyProvider extends ContentProvider {
                   .append(row_length_in_days)
                   .append(",")
                   .append('"')
-                  .append(row_ingredients_json)
+                  .append(row_ingredients)
                   .append('"')
                   .append("\n");
             } while (c.moveToNext());
@@ -171,7 +171,7 @@ public class PreppyProvider extends ContentProvider {
             ContentValues cv = new ContentValues();
             cv.put(NAME, values[0]);
             cv.put(LENGTH_IN_DAYS, Float.valueOf(values[1]));
-            cv.put(INGREDIENTS_JSON, values[2]);
+            cv.put(INGREDIENTS, values[2]);
 
             insert(CONTENT_URI, cv);
             Log.i(TAG, "Inserted meal \"" + NAME + " \" into database.");
