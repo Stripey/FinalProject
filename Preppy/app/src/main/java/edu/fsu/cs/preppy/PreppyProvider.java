@@ -36,7 +36,7 @@ public class PreppyProvider extends ContentProvider {
     private static final String SQL_CREATE_MAIN =
       "CREATE TABLE " + TABLE_MEAL + "( " +
         "_ID INTEGER PRIMARY KEY, " +
-        NAME + " INTEGER, " +
+        NAME + " TEXT, " +
         LENGTH_IN_DAYS + " FLOAT, " +
         INGREDIENTS + " TIME " +
         ")";
