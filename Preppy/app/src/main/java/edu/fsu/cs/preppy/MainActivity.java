@@ -24,7 +24,7 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public void previousMealClicked(String mealName) {
-        Log.i(TAG, "previousMealClicked: transaction started");
+        Log.i(TAG, "previousMealClicked: transaction started name = " + mealName);
         Bundle extras = new Bundle();
         extras.putString(MEAL_KEY, mealName);
 

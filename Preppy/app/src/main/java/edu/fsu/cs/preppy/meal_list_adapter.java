@@ -1,6 +1,8 @@
 package edu.fsu.cs.preppy;
 
+import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -19,11 +21,18 @@ public class meal_list_adapter extends RecyclerView.Adapter<meal_list_adapter.My
     private final static String TAG = "meal_list_adapter";
     private List<String> mealNames = new ArrayList<String>();
 
+
+    private meal_list_adapter mListener;
+
+
     public static class MyViewHolder extends RecyclerView.ViewHolder {
         public TextView mealnames;
+        public CardView mCardView;
         public MyViewHolder(View itemView) {
             super(itemView);
             mealnames = itemView.findViewById(R.id.meal_item);
+            mCardView = (CardView) itemView.findViewById(R.id.meal_CardView);
+
         }
     }
 
@@ -45,15 +54,24 @@ public class meal_list_adapter extends RecyclerView.Adapter<meal_list_adapter.My
 
     // Replace the content of a view (invoked by the layout manager)
     @Override
-    public void onBindViewHolder(@NonNull MyViewHolder myViewHolder, int position) {
+    public void onBindViewHolder(@NonNull MyViewHolder myViewHolder, final int position) {
         Log.i(TAG, "onBindViewHolder: view created");
         // Get element of dataset at position
         // replace the content of view with that element
-        myViewHolder.mealnames.setText(mealNames.get(position));
+        final String name = mealNames.get(position);
+        myViewHolder.mealnames.setText(name);
+        // https://stackoverflow.com/questions/27081787/onclicklistener-for-cardview
+        myViewHolder.mCardView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                MealListFragment.receive_name(name);
+            }
+        });
     }
 
     @Override
     public int getItemCount() {
         return mealNames.size();
     }
+
 }
