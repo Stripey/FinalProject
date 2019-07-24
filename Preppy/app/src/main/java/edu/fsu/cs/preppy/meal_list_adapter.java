@@ -21,25 +21,23 @@ public class meal_list_adapter extends RecyclerView.Adapter<meal_list_adapter.My
 
     public static class MyViewHolder extends RecyclerView.ViewHolder {
         public TextView mealnames;
-        public RelativeLayout mRelativeLayout;
         public MyViewHolder(View itemView) {
             super(itemView);
-            mealnames = itemView.findViewById(R.id.meal_list_item);
-            mRelativeLayout = itemView.findViewById(R.id.meal_list_item_relative);
+            mealnames = itemView.findViewById(R.id.meal_item);
         }
     }
 
     // Takes a list of mealNames to set the data
     public meal_list_adapter(List<String> myDataSet){
         mealNames = myDataSet;
-
+        Log.i(TAG, "meal_list_adapter: size of item sent is " + mealNames.size());
     }
 
     // Create new views (invoked by layout manager)
     @Override
     public meal_list_adapter.MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType){
         View view = (View) LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.meal_list_item, parent, false);
+                .inflate(R.layout.meal_item_cardview, parent, false);
 
         MyViewHolder vh = new MyViewHolder(view);
         return vh;

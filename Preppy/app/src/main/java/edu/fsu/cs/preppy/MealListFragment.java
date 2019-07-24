@@ -37,6 +37,7 @@ public class MealListFragment extends Fragment {
         mealNames.add("Meal 1");
         mealNames.add("Meal 2");
         mealNames.add("Meal 3");
+
     }
 
     @Nullable
