@@ -1,7 +1,11 @@
 package edu.fsu.cs.preppy;
 
+import android.Manifest;
+import android.content.pm.PackageManager;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -19,6 +23,15 @@ public class MainActivity extends AppCompatActivity implements
         MealListFragment fragment = new MealListFragment();
         String tag = MealListFragment.class.getCanonicalName();
         getSupportFragmentManager().beginTransaction().replace(R.id.MainFragment, fragment, tag).commit();
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.INTERNET)
+                != PackageManager.PERMISSION_GRANTED) {
+            // Permission is not granted
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.INTERNET},
+                    0);
+
+        }
+
 
     }
 
