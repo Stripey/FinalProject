@@ -29,10 +29,7 @@ public class MainActivity extends AppCompatActivity implements
             ActivityCompat.requestPermissions(this,
                     new String[]{Manifest.permission.INTERNET},
                     0);
-
         }
-
-
     }
 
     @Override

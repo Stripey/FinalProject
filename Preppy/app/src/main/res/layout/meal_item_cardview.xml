@@ -27,6 +27,7 @@
             android:text="TEST MEAL NAME"
             android:textAlignment="center"
             android:textSize="20sp"
+            android:fontFamily="monospace"
             android:layout_gravity="center_vertical"
             />
 

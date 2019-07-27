@@ -1,6 +1,205 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <EditText
+        android:id="@+id/mealnameEditText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="136dp"
+        android:layout_marginEnd="8dp"
+        android:ems="10"
+        android:fontFamily="monospace"
+        android:hint="Meal Name"
+        android:inputType="textPersonName"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/ingredientsEditText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:ems="10"
+        android:fontFamily="monospace"
+        android:hint="Ingredients (1 cup rice, .25 pound chicken, etc.)"
+        android:inputType="textPersonName"
+        android:textSize="13sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/mealnameEditText" />
+
+    <Button
+        android:id="@+id/calculateButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="8dp"
+        android:fontFamily="monospace"
+        android:text="Calculate Nutrition"
+        android:textAllCaps="false"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/ingredientsEditText" />
+
+    <TextView
+        android:id="@+id/proteinLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="100dp"
+        android:layout_marginEnd="8dp"
+        android:fontFamily="monospace"
+        android:text="Protein (grams)"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toStartOf="@+id/guideline"
+        app:layout_constraintTop_toBottomOf="@+id/calculateButton" />
+
+    <TextView
+        android:id="@+id/carbsLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:fontFamily="monospace"
+        android:text="Carbs (grams)"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toStartOf="@+id/guideline"
+        app:layout_constraintTop_toBottomOf="@+id/proteinLabel" />
+
+    <TextView
+        android:id="@+id/fatsLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:fontFamily="monospace"
+        android:text="Fats (grams)"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toStartOf="@+id/guideline"
+        app:layout_constraintTop_toBottomOf="@+id/carbsLabel" />
+
+    <TextView
+        android:id="@+id/caloriesLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:fontFamily="monospace"
+        android:text="Calories (kCal)"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toStartOf="@+id/guideline"
+        app:layout_constraintTop_toBottomOf="@+id/fatsLabel" />
+
+    <android.support.constraint.Guideline
+        android:id="@+id/guideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_begin="208dp" />
+
+    <EditText
+        android:id="@+id/proteinEditText"
+        style="Textview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@null"
+        android:ems="10"
+        android:fontFamily="monospace"
+        android:inputType="text"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="@+id/proteinLabel"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/proteinLabel"
+        app:layout_constraintTop_toTopOf="@+id/proteinLabel" />
+
+    <EditText
+        android:id="@+id/carbsEditText"
+        style="Textview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@null"
+        android:ems="10"
+        android:fontFamily="monospace"
+        android:inputType="text"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="@+id/carbsLabel"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/carbsLabel"
+        app:layout_constraintTop_toTopOf="@+id/carbsLabel" />
+
+    <EditText
+        android:id="@+id/fatsEditText"
+        style="Textview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@null"
+        android:ems="10"
+        android:fontFamily="monospace"
+        android:inputType="text"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="@+id/fatsLabel"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/fatsLabel"
+        app:layout_constraintTop_toTopOf="@+id/fatsLabel" />
+
+    <EditText
+        android:id="@+id/caloriesEditText"
+        style="Textview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@null"
+        android:ems="10"
+        android:fontFamily="monospace"
+        android:inputType="text"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="@+id/caloriesLabel"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/caloriesLabel"
+        app:layout_constraintTop_toTopOf="@+id/caloriesLabel" />
+
+    <SeekBar
+        android:id="@+id/daysSlider"
+        style="@style/Widget.AppCompat.SeekBar.Discrete"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:max="13"
+        android:progress="3"
+        app:layout_constraintTop_toBottomOf="@+id/daysLabel"
+        tools:layout_editor_absoluteX="184dp" />
+
+    <TextView
+        android:id="@+id/daysLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:text="Number of Days"
+        app:layout_constraintBottom_toTopOf="@+id/daysSlider"
+        app:layout_constraintEnd_toEndOf="@+id/calculateButton"
+        app:layout_constraintStart_toStartOf="@+id/calculateButton"
+        app:layout_constraintTop_toBottomOf="@+id/calculateButton" />
+
+    <TextView
+        android:id="@+id/daysViewer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:text="3"
+        app:layout_constraintBottom_toTopOf="@+id/daysSlider"
+        app:layout_constraintEnd_toEndOf="@+id/calculateButton"
+        app:layout_constraintStart_toEndOf="@+id/daysLabel"
+        app:layout_constraintTop_toTopOf="@+id/daysLabel" />
 </android.support.constraint.ConstraintLayout>

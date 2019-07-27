@@ -8,6 +8,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
+import android.widget.SeekBar;
+import android.widget.TextView;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
@@ -17,9 +20,9 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Map;
@@ -27,7 +30,18 @@ import java.util.Map;
 public class createMealFragment extends Fragment {
 
     private boolean createMeal = true;
+    private int daysCount = 4;
     private String existingMealName;
+    private EditText fats;
+    private EditText protein;
+    private EditText carbs;
+    private EditText calories;
+    private JSONObject data;
+    private TextView totalDays;
+    private EditText mealNameEditText;
+    private EditText ingredientsEditText;
+    private String mealName;
+    private String ingredients;
 
     // onCreate will check if a bundle was sent, they will be a bundle only when a meal name
     // is sent, look in content provider for said meal name
@@ -37,28 +51,97 @@ public class createMealFragment extends Fragment {
         Bundle extras = getArguments();
         if(extras != null){
             // TODO get the name
+            mealName = extras.getString("MEAL_KEY");
             createMeal = false;
-
         }
-        queryApiForMacros("1 cup macaroni and cheese");
     }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.create_meal_fragment, container, false);
+        // create edit text fields
+        fats = rootView.findViewById(R.id.fatsEditText);
+        protein = rootView.findViewById(R.id.proteinEditText);
+        calories = rootView.findViewById(R.id.caloriesEditText);
+        carbs = rootView.findViewById(R.id.carbsEditText);
+        totalDays = rootView.findViewById(R.id.daysViewer);
+        mealNameEditText = rootView.findViewById(R.id.mealnameEditText);
+        // Track the seekbar value so we can divide the total number of macros by days
+        final SeekBar daysSlider = rootView.findViewById(R.id.daysSlider);
+        daysSlider.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                daysCount = progress + 1;
+                totalDays.setText(String.valueOf(progress + 1));
+                displayData();
+            }
 
-        // If creating a meal then existing colums will be empty
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
+        // If creating a meal then existing columns will be empty
         if(createMeal){
 
         }
         else{
             // If not creating a meal then existing
+            mealNameEditText.setText(mealName);
         }
         return rootView;
     }
 
-    public void queryApiForMacros(final String query){
+    public void displayData(){
+        // initialize all macro counts to 0;
+        double total_calories = 0;
+        double total_fats = 0;
+        double total_protein = 0;
+        double total_carbs = 0;
+
+        // in case we call this without having the data to return
+        if (data == null){
+            return;
+        }
+        try {
+            JSONArray foods = data.getJSONArray("foods");
+            // loop over each of the foods that we got from the ingredients and add their macro counts to the total
+            for (int i = 0; i < foods.length(); ++i){
+//                System.out.println(foods.get(i).toString());
+                JSONObject macros = (JSONObject) foods.get(i);
+                total_calories += macros.getDouble("nf_calories");
+                total_protein += macros.getDouble("nf_protein");
+                total_fats += macros.getDouble("nf_total_fat");
+                total_carbs += macros.getDouble("nf_total_carbohydrate");
+            }
+
+//            double calories = macros.getDouble("nf_calories");
+//            double total_fat = macros.getDouble("nf_total_fat");
+//            double saturated_fat = macros.getDouble("nf_saturated_fat");
+//            double cholesterol = macros.getDouble("nf_cholesterol");
+//            double sodium = macros.getDouble("nf_sodium");
+//            double total_carbohydrate = macros.getDouble("nf_total_carbohydrate");
+//            double dietary_fiber = macros.getDouble("nf_dietary_fiber");
+//            double sugars = macros.getDouble("nf_sugars");
+//            double protein = macros.getDouble("nf_protein");
+//            double potassium = macros.getDouble("nf_potassium");
+
+            calories.setText(String.format("%.2f", total_calories / daysCount));
+            protein.setText(String.format("%.2f", total_protein / daysCount));
+            fats.setText(String.format("%.2f", total_fats / daysCount));
+            carbs.setText(String.format("%.2f", total_carbs / daysCount));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void sendApiRequest(final String query){
         final String endpoint = "https://trackapi.nutritionix.com/v2/natural/nutrients";
         RequestQueue queue = Volley.newRequestQueue(getContext());
         JsonObjectRequest objectRequest = new JsonObjectRequest(Request.Method.POST,
@@ -67,7 +150,8 @@ public class createMealFragment extends Fragment {
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
-                        Log.i("tag", response.toString());
+                        data = response;
+                        displayData();
                     }
                 },
                 new Response.ErrorListener() {
@@ -106,7 +190,9 @@ public class createMealFragment extends Fragment {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 HashMap<String, String> headers = new HashMap<>();
-//                headers.put("content-type", "application/Json");
+                // TODO: replace these keys with your keys if they don't work
+                // nilay's keys, if it doesn't work, just replace with your own keys
+                // sign up at https://developer.nutritionix.com/signup
                 headers.put("x-app-id", "d8dce813");
                 headers.put("x-app-key", "b8b17d5c9ac6876a3b0d5f4279150ca9");
                 return headers;
