@@ -67,6 +67,7 @@ public class createMealFragment extends Fragment {
         carbs = rootView.findViewById(R.id.carbsEditText);
         totalDays = rootView.findViewById(R.id.daysViewer);
         mealNameEditText = rootView.findViewById(R.id.mealnameEditText);
+        ingredientsEditText = rootView.findViewById(R.id.ingredientsEditText);
         // Track the seekbar value so we can divide the total number of macros by days
         final SeekBar daysSlider = rootView.findViewById(R.id.daysSlider);
         daysSlider.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
@@ -87,6 +88,21 @@ public class createMealFragment extends Fragment {
 
             }
         });
+        // add on click listeners
+        rootView.findViewById(R.id.calculateButton).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                calculateMacros();
+            }
+        });
+        rootView.findViewById(R.id.saveMealButton).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                saveMeal();
+            }
+        });
+
+
         // If creating a meal then existing columns will be empty
         if(createMeal){
 
@@ -94,6 +110,8 @@ public class createMealFragment extends Fragment {
         else{
             // If not creating a meal then existing
             mealNameEditText.setText(mealName);
+            ingredientsEditText.setText(ingredients);
+            sendApiRequest(ingredients);
         }
         return rootView;
     }
@@ -199,5 +217,17 @@ public class createMealFragment extends Fragment {
             }
         };
         queue.add(objectRequest);
+    }
+
+    public void calculateMacros(){
+        ingredients = ingredientsEditText.getText().toString();
+        sendApiRequest(ingredients);
+
+    }
+
+    public void saveMeal(){
+        mealName = mealNameEditText.getText().toString();
+        // TODO: Save meal to database
+
     }
 }
