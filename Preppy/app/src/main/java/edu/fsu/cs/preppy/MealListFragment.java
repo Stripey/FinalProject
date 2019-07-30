@@ -146,8 +146,6 @@ public class MealListFragment extends Fragment {
         mealRecyclerView.addOnItemTouchListener(swipeTouchListener);
 
         return rootView;
-
-
     }
 
 
