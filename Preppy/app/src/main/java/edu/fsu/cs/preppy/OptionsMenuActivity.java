@@ -1,7 +1,10 @@
 package edu.fsu.cs.preppy;
 
+import android.app.AlarmManager;
 import android.app.DatePickerDialog;
+import android.app.PendingIntent;
 import android.app.TimePickerDialog;
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.text.format.DateFormat;
 import android.text.format.Time;
@@ -44,6 +47,7 @@ public class OptionsMenuActivity extends AppCompatActivity implements
 
                 DatePickerDialog datePickerDialog = new DatePickerDialog(OptionsMenuActivity.this, OptionsMenuActivity.this,year,month,day);
                 datePickerDialog.show();
+
                 return true;
             case R.id.suggestion:
                 Toast.makeText(this,"Suggestions selected",Toast.LENGTH_LONG).show();
@@ -80,7 +84,25 @@ public class OptionsMenuActivity extends AppCompatActivity implements
         finalhour = hourOfDay;
         finalminute = minute;
 
-        Toast.makeText(this,"Year: " + finalyear + "Month: " + finalmonth + "day: " + finalday + "hour: " + finalhour + "min: " + finalminute ,Toast.LENGTH_LONG).show();
+        if(finalhour > 12)
+            finalhour = finalhour - 12;
+
+      //  Calendar cal = Calendar.getInstance();
+      //  cal.setTimeInMillis(System.currentTimeMillis());
+
+
+
+
+       // cal.set(cal.DAY_OF_WEEK,cal.MONDAY);
+        //cal.set(cal.SECOND, cal.SECOND + 1);
+
+        //Intent myintent = new Intent(getBaseContext(), Alarm.class);
+        //PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(),0, myintent,0);
+       // AlarmManager am = (AlarmManager)getSystemService(ALARM_SERVICE);
+      //  am.set(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), pendingIntent);
+
+       // am.setRepeating(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), AlarmManager.INTERVAL_DAY * 7,pendingIntent); //repeats every week
+        Toast.makeText(this,"Time set for: "+ finalyear + " " + finalmonth + " " + finalday + " " + finalhour + " " + finalminute,Toast.LENGTH_LONG).show();
 
     }
 }
