@@ -89,7 +89,6 @@ public class MealListFragment extends Fragment {
         mAdapter = new meal_list_adapter(mealNames);
         mealRecyclerView.setAdapter(mAdapter);
 
-        // TODO add onclick listener for RecyclerView
 
         addMeal.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -97,6 +96,55 @@ public class MealListFragment extends Fragment {
                 mListener.addMealClicked();
             }
         });
+
+        // https://stackoverflow.com/questions/26422948/how-to-do-swipe-to-delete-cardview-in-android-using-support-library
+        SwipeableRecyclerViewTouchListener swipeTouchListener =
+                new SwipeableRecyclerViewTouchListener(mealRecyclerView,
+                        new SwipeableRecyclerViewTouchListener.SwipeListener() {
+                            @Override
+                            public boolean canSwipeLeft(int position) {
+                                return true;
+                            }
+
+                            @Override
+                            public boolean canSwipeRight(int position) {
+                                return true;
+                            }
+
+
+                            @Override
+                            public void onDismissedBySwipeLeft(RecyclerView recyclerView, int[] reverseSortedPositions) {
+                                for (int position : reverseSortedPositions) {
+                                    String selectionClause = PreppyProvider.NAME + " = ?";
+                                    String[] selectionArgs = {mealNames.get(position)};
+                                    int deleted = getContext().getContentResolver().delete(PreppyProvider.CONTENT_URI,
+                                            selectionClause, selectionArgs);
+
+                                    mealNames.remove(position);
+                                    mAdapter.notifyItemRemoved(position);
+
+                                }
+
+
+                                mAdapter.notifyDataSetChanged();
+                            }
+
+                            @Override
+                            public void onDismissedBySwipeRight(RecyclerView recyclerView, int[] reverseSortedPositions) {
+                                for (int position : reverseSortedPositions) {
+                                    String selectionClause = PreppyProvider.NAME +  " = ?";
+                                    String[] selectionArgs = {mealNames.get(position)};
+                                    int deleted = getContext().getContentResolver().delete(PreppyProvider.CONTENT_URI,
+                                            selectionClause, selectionArgs);
+                                    mealNames.remove(position);
+                                    mAdapter.notifyItemRemoved(position);
+                                }
+                                mAdapter.notifyDataSetChanged();
+                            }
+
+                        });
+        mealRecyclerView.addOnItemTouchListener(swipeTouchListener);
+
         return rootView;
     }
 
