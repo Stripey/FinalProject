@@ -1,5 +1,8 @@
 package edu.fsu.cs.preppy;
 
+import android.content.ContentResolver;
+import android.content.ContentValues;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -11,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
@@ -42,6 +46,7 @@ public class createMealFragment extends Fragment {
     private EditText ingredientsEditText;
     private String mealName;
     private String ingredients;
+    private ContentResolver resolver;
 
     // onCreate will check if a bundle was sent, they will be a bundle only when a meal name
     // is sent, look in content provider for said meal name
@@ -49,10 +54,23 @@ public class createMealFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Bundle extras = getArguments();
+        resolver = getContext().getContentResolver();
         if(extras != null){
             // TODO get the name
             mealName = extras.getString("MEAL_KEY");
+            Log.e("", mealName);
             createMeal = false;
+            Cursor cursor = resolver.query(
+                    PreppyProvider.CONTENT_URI,
+                    new String[]{"LENGTH_IN_DAYS", "INGREDIENTS"},
+                    "NAME = ?",
+                    new String[]{mealName},
+                    null,
+                    null
+                    );
+            Log.e("", "" + cursor.moveToFirst());
+            ingredients = cursor.getString(cursor.getColumnIndex("INGREDIENTS"));
+            daysCount = (int) cursor.getFloat(cursor.getColumnIndex("LENGTH_IN_DAYS"));
         }
     }
 
@@ -68,8 +86,10 @@ public class createMealFragment extends Fragment {
         totalDays = rootView.findViewById(R.id.daysViewer);
         mealNameEditText = rootView.findViewById(R.id.mealnameEditText);
         ingredientsEditText = rootView.findViewById(R.id.ingredientsEditText);
-        // Track the seekbar value so we can divide the total number of macros by days
         final SeekBar daysSlider = rootView.findViewById(R.id.daysSlider);
+        // initialize slider to days - 1 since we're offset by 1
+        daysSlider.setProgress(daysCount - 1);
+        // Track the seekbar value so we can divide the total number of macros by days
         daysSlider.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
@@ -111,6 +131,7 @@ public class createMealFragment extends Fragment {
             // If not creating a meal then existing
             mealNameEditText.setText(mealName);
             ingredientsEditText.setText(ingredients);
+            totalDays.setText(daysCount + "");
             sendApiRequest(ingredients);
         }
         return rootView;
@@ -227,7 +248,31 @@ public class createMealFragment extends Fragment {
 
     public void saveMeal(){
         mealName = mealNameEditText.getText().toString();
-        // TODO: Save meal to database
+        ingredients = ingredientsEditText.getText().toString();
+        if (mealName.isEmpty() || ingredients.isEmpty()){
+            Toast.makeText(getContext(), "Please enter ingredients and meal name", Toast.LENGTH_SHORT).show();
+        }
+        // save the meal to the database
 
+        if (createMeal) {
+            ContentValues values = new ContentValues();
+            values.put("NAME", mealName);
+            values.put("INGREDIENTS", ingredients);
+            values.put("LENGTH_IN_DAYS", (float) daysCount);
+            resolver.insert(PreppyProvider.CONTENT_URI, values);
+        }
+        else {
+
+            ContentValues values = new ContentValues();
+            values.put("NAME", mealName);
+            values.put("INGREDIENTS", ingredients);
+            values.put("LENGTH_IN_DAYS", (float) daysCount);
+            resolver.update(PreppyProvider.CONTENT_URI, values, "NAME = ?", new String[]{mealName});
+        }
+        // send us back to main
+
+        MealListFragment fragment = new MealListFragment();
+        String tag = MealListFragment.class.getCanonicalName();
+        getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.MainFragment, fragment, tag).commit();
     }
 }

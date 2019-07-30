@@ -98,8 +98,6 @@ public class MealListFragment extends Fragment {
             }
         });
         return rootView;
-
-
     }
 
 
