@@ -40,7 +40,7 @@ public class MainActivity extends AppCompatActivity implements
 
         createMealFragment fragment = new createMealFragment();
         fragment.setArguments(extras);
-        String tag = MealListFragment.class.getCanonicalName();
+        String tag = createMealFragment.class.getCanonicalName();
         getSupportFragmentManager().beginTransaction().replace(R.id.MainFragment, fragment, tag).commit();
     }
 
@@ -48,6 +48,17 @@ public class MainActivity extends AppCompatActivity implements
     public void addMealClicked() {
         Log.i(TAG, "addMealClicked: transaction started");
         createMealFragment fragment = new createMealFragment();
+        String tag = createMealFragment.class.getCanonicalName();
+        getSupportFragmentManager().beginTransaction().replace(R.id.MainFragment, fragment, tag).commit();
+    }
+
+    @Override
+    public void onBackPressed() {
+        MealListFragment visibleFragment = (MealListFragment) getSupportFragmentManager().findFragmentByTag(MealListFragment.class.getCanonicalName());
+        if (visibleFragment != null && visibleFragment.isVisible()){
+            super.onBackPressed();
+        }
+        MealListFragment fragment = new MealListFragment();
         String tag = MealListFragment.class.getCanonicalName();
         getSupportFragmentManager().beginTransaction().replace(R.id.MainFragment, fragment, tag).commit();
     }
