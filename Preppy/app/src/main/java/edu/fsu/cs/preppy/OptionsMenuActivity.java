@@ -88,6 +88,12 @@ public class OptionsMenuActivity extends AppCompatActivity implements
                 intent.putExtra("save", true);
                 startActivity(intent);
                 return true;
+            case R.id.import_meals:
+                getContentResolver().call(PreppyProvider.CONTENT_URI, "load", "MealData.csv", null);
+                return true;
+            case R.id.export_meals:
+                getContentResolver().call(PreppyProvider.CONTENT_URI, "dump", "MealData.csv", null);
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
