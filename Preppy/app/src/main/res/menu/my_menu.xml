@@ -38,6 +38,6 @@
 
     <item
         android:id="@+id/export_meals"
-        android:title="Import Meals"
+        android:title="Export Meals"
         />
 </menu>
