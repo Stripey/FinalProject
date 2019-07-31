@@ -23,18 +23,16 @@ import android.widget.Toast;
 
 import java.util.Calendar;
 
-public class OptionsMenuActivity extends AppCompatActivity implements
-        DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener {
+public class OptionsMenuActivity extends AppCompatActivity implements DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener {
 
-    int day,month,year,hour,minute;
-    int finalday,finalmonth,finalyear,finalhour,finalminute;
+    int day, month, year, hour, minute;
+    int finalday, finalmonth, finalyear, finalhour, finalminute;
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
 
         MenuInflater menuInflater = getMenuInflater();
-        menuInflater.inflate(R.menu.my_menu,menu);
-
+        menuInflater.inflate(R.menu.my_menu, menu);
 
 
         return true;
@@ -42,9 +40,10 @@ public class OptionsMenuActivity extends AppCompatActivity implements
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+
         String date = "";
 
-        switch(item.getItemId()){
+        switch (item.getItemId()) {
 
             case R.id.mon:
                 date = "monday";
@@ -74,7 +73,7 @@ public class OptionsMenuActivity extends AppCompatActivity implements
 
                 return true;
             case R.id.suggestion:
-                Toast.makeText(this,"Suggestions selected",Toast.LENGTH_LONG).show();
+                Toast.makeText(this, "Suggestions selected", Toast.LENGTH_LONG).show();
                 return true;
             case R.id.calendar:
                 Calendar calendarEvent = Calendar.getInstance();
@@ -90,9 +89,11 @@ public class OptionsMenuActivity extends AppCompatActivity implements
                 return true;
             case R.id.import_meals:
                 getContentResolver().call(PreppyProvider.CONTENT_URI, "load", "MealData.csv", null);
+                Toast.makeText(this, "Meal information stored in \"MealData.csv\" has been saved ", Toast.LENGTH_LONG).show();
                 return true;
             case R.id.export_meals:
                 getContentResolver().call(PreppyProvider.CONTENT_URI, "dump", "MealData.csv", null);
+                Toast.makeText(this, "Your stored meals have been exported to \"MealData.csv\"", Toast.LENGTH_LONG).show();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -113,36 +114,35 @@ public class OptionsMenuActivity extends AppCompatActivity implements
         hour = c.get(Calendar.HOUR_OF_DAY);
         minute = c.get(Calendar.MINUTE);
 
-        TimePickerDialog timePickerDialog = new TimePickerDialog(OptionsMenuActivity.this, OptionsMenuActivity.this,
-                hour,minute, DateFormat.is24HourFormat(OptionsMenuActivity.this));
+        TimePickerDialog timePickerDialog = new TimePickerDialog(OptionsMenuActivity.this, OptionsMenuActivity.this, hour, minute, DateFormat.is24HourFormat(OptionsMenuActivity.this));
 
         timePickerDialog.show();
     }
 
     @Override
     public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+
         finalhour = hourOfDay;
         finalminute = minute;
 
-        if(finalhour > 12)
+        if (finalhour > 12) {
             finalhour = finalhour - 12;
+        }
 
-      //  Calendar cal = Calendar.getInstance();
-      //  cal.setTimeInMillis(System.currentTimeMillis());
+        //  Calendar cal = Calendar.getInstance();
+        //  cal.setTimeInMillis(System.currentTimeMillis());
 
 
-
-
-       // cal.set(cal.DAY_OF_WEEK,cal.MONDAY);
+        // cal.set(cal.DAY_OF_WEEK,cal.MONDAY);
         //cal.set(cal.SECOND, cal.SECOND + 1);
 
         //Intent myintent = new Intent(getBaseContext(), Alarm.class);
         //PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(),0, myintent,0);
-       // AlarmManager am = (AlarmManager)getSystemService(ALARM_SERVICE);
-      //  am.set(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), pendingIntent);
+        // AlarmManager am = (AlarmManager)getSystemService(ALARM_SERVICE);
+        //  am.set(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), pendingIntent);
 
-       // am.setRepeating(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), AlarmManager.INTERVAL_DAY * 7,pendingIntent); //repeats every week
-        Toast.makeText(this,"Time set for: "+ finalyear + " " + finalmonth + " " + finalday + " " + finalhour + " " + finalminute,Toast.LENGTH_LONG).show();
+        // am.setRepeating(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), AlarmManager.INTERVAL_DAY * 7,pendingIntent); //repeats every week
+        Toast.makeText(this, "Time set for: " + finalyear + " " + finalmonth + " " + finalday + " " + finalhour + " " + finalminute, Toast.LENGTH_LONG).show();
 
     }
 
