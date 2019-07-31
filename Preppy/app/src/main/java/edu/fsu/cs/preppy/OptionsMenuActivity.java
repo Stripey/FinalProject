@@ -7,7 +7,10 @@ import android.app.Dialog;
 import android.app.PendingIntent;
 import android.app.TimePickerDialog;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
+import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.text.format.DateFormat;
 import android.text.format.Time;
@@ -99,11 +102,12 @@ public class OptionsMenuActivity extends AppCompatActivity implements DatePicker
                 dialog.setTitle("Enter Filename");
                 dialog.setCancelable(true);
                 dialog.findViewById(R.id.dei_action).setOnClickListener(new View.OnClickListener() {
+                    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
                     @Override
                     public void onClick(View v) {
 
                         EditText et_filename = importDialog.findViewById(R.id.dei_filename);
-                        String filename = et_filename.getText().toString().trim();
+                        String filename = getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS) + et_filename.getText().toString().trim();
 
                         Bundle b = getContentResolver().call(PreppyProvider.CONTENT_URI, "load", filename, null);
 
@@ -119,11 +123,12 @@ public class OptionsMenuActivity extends AppCompatActivity implements DatePicker
                 dialog.setTitle("Enter Filename");
                 dialog.setCancelable(true);
                 dialog.findViewById(R.id.dei_action).setOnClickListener(new View.OnClickListener() {
+                    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
                     @Override
                     public void onClick(View v) {
 
                         EditText et_filename = exportDialog.findViewById(R.id.dei_filename);
-                        String filename = et_filename.getText().toString().trim();
+                        String filename = getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS) + et_filename.getText().toString().trim();
 
                         Bundle b = getContentResolver().call(PreppyProvider.CONTENT_URI, "dump", filename, null);
                         Toast.makeText(getApplicationContext(), b.getBoolean("succeeded") ? "Your stored meals have been " + "exported to " + "\"" + filename + "\"" : "There was an issue storing your meals in the specified file.", Toast.LENGTH_LONG).show();
