@@ -1,6 +1,7 @@
 package edu.fsu.cs.preppy;
 
 import android.app.AlarmManager;
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.PendingIntent;
 import android.app.TimePickerDialog;
@@ -8,10 +9,15 @@ import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.text.format.DateFormat;
 import android.text.format.Time;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
+import android.widget.ListView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
@@ -23,41 +29,69 @@ public class OptionsMenuActivity extends AppCompatActivity implements
     int day,month,year,hour,minute;
     int finalday,finalmonth,finalyear,finalhour,finalminute;
 
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
 
         MenuInflater menuInflater = getMenuInflater();
         menuInflater.inflate(R.menu.my_menu,menu);
+
+
+
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        String date = "";
 
         switch(item.getItemId()){
-            case R.id.history:
-                Toast.makeText(this,"History selected",Toast.LENGTH_LONG).show();
-                return true;
-            case R.id.reminder:
-                Calendar c = Calendar.getInstance();
-                year = c.get(Calendar.YEAR);
-                month = c.get(Calendar.MONTH);
-                day = c.get(Calendar.DAY_OF_MONTH);
 
-                DatePickerDialog datePickerDialog = new DatePickerDialog(OptionsMenuActivity.this, OptionsMenuActivity.this,year,month,day);
-                datePickerDialog.show();
+            case R.id.mon:
+                date = "monday";
+                return true;
+            case R.id.tue:
+                date = "tuesday";
+
+                return true;
+            case R.id.wed:
+                date = "wednesday";
+
+                return true;
+            case R.id.thur:
+                date = "thursday";
+
+                return true;
+            case R.id.fri:
+                date = "friday";
+
+                return true;
+            case R.id.sat:
+                date = "saturday";
+
+                return true;
+            case R.id.sun:
+                date = "sunday";
 
                 return true;
             case R.id.suggestion:
                 Toast.makeText(this,"Suggestions selected",Toast.LENGTH_LONG).show();
                 return true;
-            case R.id.calculate:
-                Toast.makeText(this,"Calculate selected",Toast.LENGTH_LONG).show();
+            case R.id.calendar:
+                Calendar calendarEvent = Calendar.getInstance();
+                Intent intent = new Intent(Intent.ACTION_EDIT);
+                intent.setType("vnd.android.cursor.item/event");
+                intent.putExtra("beginTime", calendarEvent.getTimeInMillis());
+                intent.putExtra("endTime", calendarEvent.getTimeInMillis() + 60 * 60 * 1000);
+                intent.putExtra("title", "My Food");
+                intent.putExtra("allDay", true);
+                intent.putExtra("rule", "FREQ=YEARLY");
+                intent.putExtra("save", true);
+                startActivity(intent);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
+
 
     }
 
@@ -105,4 +139,5 @@ public class OptionsMenuActivity extends AppCompatActivity implements
         Toast.makeText(this,"Time set for: "+ finalyear + " " + finalmonth + " " + finalday + " " + finalhour + " " + finalminute,Toast.LENGTH_LONG).show();
 
     }
+
 }
