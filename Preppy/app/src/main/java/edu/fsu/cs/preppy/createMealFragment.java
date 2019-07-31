@@ -2,6 +2,7 @@ package edu.fsu.cs.preppy;
 
 import android.content.ContentResolver;
 import android.content.ContentValues;
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -32,18 +33,23 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class createMealFragment extends Fragment {
 
+    Boolean temp = true;
     private boolean createMeal = true;
     private int daysCount = 4;
     private String existingMealName;
     private EditText fats;
     private EditText protein;
     private EditText carbs;
+    private TextView percprot;
+    private TextView percfat;
+    private TextView perccarbs;
     private EditText calories;
     private JSONObject data;
     private TextView totalDays;
@@ -52,6 +58,7 @@ public class createMealFragment extends Fragment {
     private String mealName;
     private String ingredients;
     private ContentResolver resolver;
+
 
     // onCreate will check if a bundle was sent, they will be a bundle only when a meal name
     // is sent, look in content provider for said meal name
@@ -85,6 +92,9 @@ public class createMealFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.create_meal_fragment, container, false);
         // create edit text fields
+        perccarbs = rootView.findViewById(R.id.carbperc);
+        percfat = rootView.findViewById(R.id.fatperc);
+        percprot = rootView.findViewById(R.id.proteinperc);
         fats = rootView.findViewById(R.id.fatsEditText);
         protein = rootView.findViewById(R.id.proteinEditText);
         calories = rootView.findViewById(R.id.caloriesEditText);
@@ -125,9 +135,25 @@ public class createMealFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 saveMeal();
+                temp = false;
             }
         });
+        rootView.findViewById(R.id.add_calendar).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
 
+                Calendar calendarEvent = Calendar.getInstance();
+                Intent intent = new Intent(Intent.ACTION_EDIT);
+                intent.setType("vnd.android.cursor.item/event");
+                intent.putExtra("beginTime", calendarEvent.getTimeInMillis());
+                intent.putExtra("endTime", calendarEvent.getTimeInMillis() + 60 * 60 * 1000);
+                intent.putExtra("title", mealName);
+                intent.putExtra("allDay", true);
+                intent.putExtra("rule", "FREQ=YEARLY");
+                intent.putExtra("save", true);
+                startActivity(intent);
+            }
+        });
 
         // If creating a meal then existing columns will be empty
         if(createMeal){
@@ -165,6 +191,7 @@ public class createMealFragment extends Fragment {
                 total_fats += macros.getDouble("nf_total_fat");
                 total_carbs += macros.getDouble("nf_total_carbohydrate");
             }
+            double total = total_carbs + total_fats + total_protein;
 
 //            double calories = macros.getDouble("nf_calories");
 //            double total_fat = macros.getDouble("nf_total_fat");
@@ -181,6 +208,11 @@ public class createMealFragment extends Fragment {
             protein.setText(String.format("%.2f", total_protein / daysCount));
             fats.setText(String.format("%.2f", total_fats / daysCount));
             carbs.setText(String.format("%.2f", total_carbs / daysCount));
+            if(total_calories != 0) {
+                perccarbs.setText(String.format("%.2f percent", total_carbs / total * 100));
+                percprot.setText(String.format("%.2f percent", total_protein / total * 100));
+                percfat.setText(String.format("%.2f percent", total_fats / total * 100 ));
+            }
         } catch (JSONException e) {
             e.printStackTrace();
         }
