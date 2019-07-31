@@ -3,12 +3,15 @@ package edu.fsu.cs.preppy;
 import android.app.AlarmManager;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
+import android.app.Dialog;
 import android.app.PendingIntent;
 import android.app.TimePickerDialog;
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.format.DateFormat;
 import android.text.format.Time;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -17,6 +20,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TimePicker;
 import android.widget.Toast;
@@ -41,6 +45,7 @@ public class OptionsMenuActivity extends AppCompatActivity implements DatePicker
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
+        Dialog dialog = null;
         String date = "";
 
         switch (item.getItemId()) {
@@ -88,12 +93,44 @@ public class OptionsMenuActivity extends AppCompatActivity implements DatePicker
                 startActivity(intent);
                 return true;
             case R.id.import_meals:
-                getContentResolver().call(PreppyProvider.CONTENT_URI, "load", "MealData.csv", null);
-                Toast.makeText(this, "Meal information stored in \"MealData.csv\" has been saved ", Toast.LENGTH_LONG).show();
+                dialog = new Dialog(this);
+                final Dialog importDialog = dialog;
+                dialog.setContentView(R.layout.menu_option_import_export_dialog);
+                dialog.setTitle("Enter Filename");
+                dialog.setCancelable(true);
+                dialog.findViewById(R.id.dei_action).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+                        EditText et_filename = importDialog.findViewById(R.id.dei_filename);
+                        String filename = et_filename.getText().toString().trim();
+
+                        Bundle b = getContentResolver().call(PreppyProvider.CONTENT_URI, "load", filename, null);
+
+                        Toast.makeText(getApplicationContext(), b.getBoolean("succeeded") ? "Meal information stored in \"" + filename + "\" has" + " been " + "saved." : "There was an issue reading the meal " + "information" + " from the" + " " + "specified file.", Toast.LENGTH_LONG).show();
+                    }
+                });
+                dialog.show();
                 return true;
             case R.id.export_meals:
-                getContentResolver().call(PreppyProvider.CONTENT_URI, "dump", "MealData.csv", null);
-                Toast.makeText(this, "Your stored meals have been exported to \"MealData.csv\"", Toast.LENGTH_LONG).show();
+                dialog = new Dialog(this);
+                final Dialog exportDialog = dialog;
+                dialog.setContentView(R.layout.menu_option_import_export_dialog);
+                dialog.setTitle("Enter Filename");
+                dialog.setCancelable(true);
+                dialog.findViewById(R.id.dei_action).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+                        EditText et_filename = exportDialog.findViewById(R.id.dei_filename);
+                        String filename = et_filename.getText().toString().trim();
+
+                        Bundle b = getContentResolver().call(PreppyProvider.CONTENT_URI, "dump", filename, null);
+                        Toast.makeText(getApplicationContext(), b.getBoolean("succeeded") ? "Your stored meals have been " + "exported to " + "\"" + filename + "\"" : "There was an issue storing your meals in the specified file.", Toast.LENGTH_LONG).show();
+                    }
+                });
+
+                dialog.show();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

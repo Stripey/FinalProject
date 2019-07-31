@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
 import java.nio.file.Paths;
 
 public class PreppyProvider extends ContentProvider {
@@ -98,8 +99,20 @@ public class PreppyProvider extends ContentProvider {
         switch (method) {
             case "dump":
                 assert arg != null;
+                boolean dumpSucceeded = false;
                 // arg is file path to dump contents of current database into file
-                dump(new File(arg));
+                try {
+                    dump(new File(arg));
+                    dumpSucceeded = true;
+                }
+                catch  (NoSuchFileException e) {
+                    e.printStackTrace();
+                }
+                catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+                mealDataBundle.putBoolean("succeeded", dumpSucceeded);
                 break;
             case "dumps":
                 // no arg required here, just writing database contents to a string
@@ -107,14 +120,20 @@ public class PreppyProvider extends ContentProvider {
                 break;
             case "load":
                 assert arg != null;
+                boolean loadSucceeded = false;
                 // arg should be a path to the file load into the database
                 // file should contain a valid csv string
                 try {
                     loads(readFile(arg, StandardCharsets.US_ASCII));
+                    loadSucceeded = true;
+                }
+                catch  (NoSuchFileException e) {
+                    e.printStackTrace();
                 }
                 catch (IOException e) {
                     e.printStackTrace();
                 }
+                mealDataBundle.putBoolean("succeeded", loadSucceeded);
                 break;
             case "loads":
                 assert arg != null;
@@ -123,27 +142,21 @@ public class PreppyProvider extends ContentProvider {
                 break;
         }
 
-        return super.call(method, arg, extras);
+        return mealDataBundle;
     }
 
     // Write/"dump" the database to a CSV file
-    public void dump(File dest) {
+    public void dump(File dest) throws IOException {
 
         if (dest.exists()) {
             Log.i(TAG, "Destination file already exists");
             return;
         }
 
-        try {
-            FileWriter fw = new FileWriter(dest);
-            fw.write(dumps());
-            fw.flush();
-            fw.close();
-        }
-        catch (IOException e) {
-            e.printStackTrace();
-            return;
-        }
+        FileWriter fw = new FileWriter(dest);
+        fw.write(dumps());
+        fw.flush();
+        fw.close();
     }
 
     // Load from a CSV file and store the rows as rows in the Meal table
