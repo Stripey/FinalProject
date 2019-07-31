@@ -257,6 +257,7 @@ public class createMealFragment extends Fragment {
         ingredients = ingredientsEditText.getText().toString();
         if (mealName.isEmpty() || ingredients.isEmpty()){
             Toast.makeText(getContext(), "Please enter ingredients and meal name", Toast.LENGTH_SHORT).show();
+            return;
         }
         // save the meal to the database
 

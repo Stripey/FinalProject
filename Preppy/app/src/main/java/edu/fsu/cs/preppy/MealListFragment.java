@@ -93,6 +93,7 @@ public class MealListFragment extends Fragment {
         addMeal.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                mListener = (MealListFragmentLisetener) getContext();
                 mListener.addMealClicked();
             }
         });

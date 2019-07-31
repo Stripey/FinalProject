@@ -10,10 +10,12 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.util.Log;
+import android.widget.Toast;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -41,7 +43,7 @@ public class PreppyProvider extends ContentProvider {
     public final static String NAME = "NAME"; // integer
     public final static String LENGTH_IN_DAYS = "LENGTH_IN_DAYS"; // float
     public final static String INGREDIENTS = "INGREDIENTS"; // string
-    private final static String CSV_SCHEMA = NAME + "," + LENGTH_IN_DAYS + "," + INGREDIENTS + "\n";
+    private final static String CSV_SCHEMA = NAME + "," + LENGTH_IN_DAYS + "," + INGREDIENTS + '\n';
 
     private static final String SQL_CREATE_MAIN = "CREATE TABLE " + TABLE_MEAL + "( " + "_ID INTEGER PRIMARY KEY, " + NAME + " TEXT, " + LENGTH_IN_DAYS + " FLOAT, " + INGREDIENTS + " TIME " + ")";
 
@@ -80,7 +82,6 @@ public class PreppyProvider extends ContentProvider {
     // idiomatic function for reading a file before java 11
     @RequiresApi(api = Build.VERSION_CODES.O)
     static String readFile(String path, Charset encoding) throws IOException {
-
         byte[] encoded = Files.readAllBytes(Paths.get(path));
         return new String(encoded, encoding);
     }
@@ -101,8 +102,9 @@ public class PreppyProvider extends ContentProvider {
                 assert arg != null;
                 boolean dumpSucceeded = false;
                 // arg is file path to dump contents of current database into file
+                File file = new File(getContext().getFilesDir(), arg);
                 try {
-                    dump(new File(arg));
+                    dump(file);
                     dumpSucceeded = true;
                 }
                 catch  (NoSuchFileException e) {
@@ -123,16 +125,21 @@ public class PreppyProvider extends ContentProvider {
                 boolean loadSucceeded = false;
                 // arg should be a path to the file load into the database
                 // file should contain a valid csv string
+                File readinfile = new File(getContext().getFilesDir(), arg);
+                String path = readinfile.getPath();
+
                 try {
-                    loads(readFile(arg, StandardCharsets.US_ASCII));
+                    load(readinfile);
                     loadSucceeded = true;
-                }
-                catch  (NoSuchFileException e) {
+                } catch (Exception e){
                     e.printStackTrace();
                 }
-                catch (IOException e) {
-                    e.printStackTrace();
-                }
+//                catch  (NoSuchFileException e) {
+//                    e.printStackTrace();
+//                }
+//                catch (IOException e) {
+//                    e.printStackTrace();
+//                }
                 mealDataBundle.putBoolean("succeeded", loadSucceeded);
                 break;
             case "loads":
@@ -181,17 +188,21 @@ public class PreppyProvider extends ContentProvider {
                 return;
             }
             // verify first row of non-empty file contains the proper row schema
-            else if (!buffer.equals(CSV_SCHEMA)) {
+            else if (!(buffer + '\n').equals(CSV_SCHEMA)) {
                 Log.i(TAG, "Source file's row schema is incorrect");
                 fr.close();
                 return;
             }
             // save csv schema since `loads` function expects it
-            csv_sb.append(buffer);
+            System.out.println("buffer = " + buffer);
+            csv_sb.append(buffer).append("\n");
 
             // read the remaining rows of csv files as data to insert
             while ((buffer = fr.readLine()) != null) {
-                csv_sb.append(buffer);
+                if ((buffer+'\n').equals(CSV_SCHEMA)){
+                    continue;
+                }
+                csv_sb.append(buffer).append("\n");
             }
 
             // store into database
@@ -223,26 +234,31 @@ public class PreppyProvider extends ContentProvider {
         c.close();
 
         // Return string/csv reprensentation of database
+        System.out.print(csv_sb);
         return csv_sb.toString();
     }
 
     // Given a CSV-valid string, store each row as rows in the Meal table
     public void loads(String csv_input) {
 
-        String[] rows = csv_input.split("\n", 1);
+        String[] rows = csv_input.split("\n");
 
-        if (!rows[0].equals(CSV_SCHEMA)) {
+        if (!(rows[0] +'\n').equals(CSV_SCHEMA)) {
             Log.i(TAG, "Failed to load csv data, row schema incorrect");
             return;
         }
 
-        for (String row : rows[1].split("\n")) {
-            String[] values = row.split(",");
+        for (String row : rows) {
+            if ((row +'\n').contains(CSV_SCHEMA)) {
+                continue;
+            }
+            String[] values = row.split(",", 3);
 
             ContentValues cv = new ContentValues();
             cv.put(NAME, values[0]);
             cv.put(LENGTH_IN_DAYS, Float.valueOf(values[1]));
-            cv.put(INGREDIENTS, values[2]);
+            cv.put(INGREDIENTS, values[2].replace('"', ' '));
+
 
             insert(CONTENT_URI, cv);
             Log.i(TAG, "Inserted meal \"" + NAME + " \" into database.");

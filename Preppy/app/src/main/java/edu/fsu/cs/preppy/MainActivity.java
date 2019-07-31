@@ -1,6 +1,7 @@
 package edu.fsu.cs.preppy;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentManager;
@@ -42,6 +43,13 @@ public class MainActivity extends OptionsMenuActivity implements
                     new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
                     0);
         }
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED) {
+            // Permission is not granted
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+                    0);
+        }
     }
 
     @Override
@@ -73,5 +81,9 @@ public class MainActivity extends OptionsMenuActivity implements
         MealListFragment fragment = new MealListFragment();
         String tag = MealListFragment.class.getCanonicalName();
         getSupportFragmentManager().beginTransaction().replace(R.id.MainFragment, fragment, tag).commit();
+    }
+    public void restartMainActivity(){
+        Intent intent = new Intent(this, MainActivity.class);
+        startActivity(intent);
     }
 }
