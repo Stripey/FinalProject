@@ -34,6 +34,14 @@ public class MainActivity extends OptionsMenuActivity implements
                     new String[]{Manifest.permission.INTERNET},
                     0);
         }
+
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED) {
+            // Permission is not granted
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                    0);
+        }
     }
 
     @Override

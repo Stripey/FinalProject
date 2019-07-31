@@ -45,6 +45,7 @@
             app:layout_constraintTop_toBottomOf="@+id/mealnameEditText" />
 
         <Button
+            android:background="@drawable/button_shape"
             android:id="@+id/calculateButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -210,6 +211,7 @@
             app:layout_constraintTop_toTopOf="@+id/daysLabel" />
 
         <Button
+            android:background="@drawable/button_shape"
             android:id="@+id/saveMealButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
