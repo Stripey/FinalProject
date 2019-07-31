@@ -30,4 +30,14 @@
                 android:title="Sunday" />
         </menu>
     </item>
+
+    <item
+        android:id="@+id/import_meals"
+        android:title="@string/import_meals"
+        />
+
+    <item
+        android:id="@+id/export_meals"
+        android:title="@string/export_meals"
+        />
 </menu>
