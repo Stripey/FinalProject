@@ -34,12 +34,16 @@ public class OptionsMenuActivity extends AppCompatActivity implements
 
     int day,month,year,hour,minute;
     int finalday,finalmonth,finalyear,finalhour,finalminute;
+    Calendar cal = Calendar.getInstance();
+
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
 
         MenuInflater menuInflater = getMenuInflater();
         menuInflater.inflate(R.menu.my_menu,menu);
+
 
 
 
@@ -51,35 +55,104 @@ public class OptionsMenuActivity extends AppCompatActivity implements
         String date = "";
         Dialog dialog = null;
 
+        TimePickerDialog timePickerDialog;
+        cal.setTimeInMillis(System.currentTimeMillis());
+
         switch(item.getItemId()){
 
+            case R.id.suggestion:
+                Toast.makeText(this,"Suggestions selected",Toast.LENGTH_LONG).show();
+                return true;
+            case R.id.calendar:
+                Calendar calendarEvent = Calendar.getInstance();
+                Intent intent = new Intent(Intent.ACTION_VIEW);
+                intent.setType("vnd.android.cursor.item/event");
+                startActivity(intent);
+                return true;
+
             case R.id.mon:
-                date = "monday";
+                cal.set(cal.DAY_OF_WEEK,cal.MONDAY);
+
+
+                hour = cal.get(Calendar.HOUR_OF_DAY);
+                minute = cal.get(Calendar.MINUTE);
+
+                timePickerDialog = new TimePickerDialog(OptionsMenuActivity.this, OptionsMenuActivity.this,
+                        hour,minute, DateFormat.is24HourFormat(OptionsMenuActivity.this));
+
+                timePickerDialog.show();
+
+
+
                 return true;
             case R.id.tue:
-                date = "tuesday";
+                cal.set(cal.DAY_OF_WEEK,cal.TUESDAY);
+                hour = cal.get(Calendar.HOUR_OF_DAY);
+                minute = cal.get(Calendar.MINUTE);
+
+
+                timePickerDialog = new TimePickerDialog(OptionsMenuActivity.this, OptionsMenuActivity.this,
+                        hour,minute, DateFormat.is24HourFormat(OptionsMenuActivity.this));
+
+                timePickerDialog.show();
 
                 return true;
             case R.id.wed:
-                date = "wednesday";
+                cal.set(cal.DAY_OF_WEEK,cal.WEDNESDAY);
+                hour = cal.get(Calendar.HOUR_OF_DAY);
+                minute = cal.get(Calendar.MINUTE);
+
+                timePickerDialog = new TimePickerDialog(OptionsMenuActivity.this, OptionsMenuActivity.this,
+                        hour,minute, DateFormat.is24HourFormat(OptionsMenuActivity.this));
+
+                timePickerDialog.show();
 
                 return true;
             case R.id.thur:
-                date = "thursday";
+                cal.set(cal.DAY_OF_WEEK,cal.THURSDAY);
+                hour = cal.get(Calendar.HOUR_OF_DAY);
+                minute = cal.get(Calendar.MINUTE);
+
+                timePickerDialog = new TimePickerDialog(OptionsMenuActivity.this, OptionsMenuActivity.this,
+                        hour,minute, DateFormat.is24HourFormat(OptionsMenuActivity.this));
+
+                timePickerDialog.show();
 
                 return true;
             case R.id.fri:
-                date = "friday";
+                cal.set(cal.DAY_OF_WEEK,cal.FRIDAY);
+                hour = cal.get(Calendar.HOUR_OF_DAY);
+                minute = cal.get(Calendar.MINUTE);
+
+                timePickerDialog = new TimePickerDialog(OptionsMenuActivity.this, OptionsMenuActivity.this,
+                        hour,minute, DateFormat.is24HourFormat(OptionsMenuActivity.this));
+
+                timePickerDialog.show();
 
                 return true;
             case R.id.sat:
-                date = "saturday";
+                cal.set(cal.DAY_OF_WEEK,cal.SATURDAY);
+                hour = cal.get(Calendar.HOUR_OF_DAY);
+                minute = cal.get(Calendar.MINUTE);
+
+                timePickerDialog = new TimePickerDialog(OptionsMenuActivity.this, OptionsMenuActivity.this,
+                        hour,minute, DateFormat.is24HourFormat(OptionsMenuActivity.this));
+
+                timePickerDialog.show();
 
                 return true;
             case R.id.sun:
-                date = "sunday";
+                cal.set(cal.DAY_OF_WEEK,cal.SUNDAY);
+                hour = cal.get(Calendar.HOUR_OF_DAY);
+                minute = cal.get(Calendar.MINUTE);
+
+                timePickerDialog = new TimePickerDialog(OptionsMenuActivity.this, OptionsMenuActivity.this,
+                        hour,minute, DateFormat.is24HourFormat(OptionsMenuActivity.this));
+
+                timePickerDialog.show();
 
                 return true;
+<<<<<<< HEAD
             case R.id.suggestion:
                 Toast.makeText(this,"Suggestions selected",Toast.LENGTH_LONG).show();
                 return true;
@@ -165,27 +238,27 @@ public class OptionsMenuActivity extends AppCompatActivity implements
     @Override
     public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
         finalhour = hourOfDay;
+        Intent myintent = new Intent(getBaseContext(), Alarm.class);
+
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(),0, myintent,0);
+
+        AlarmManager am = (AlarmManager)getSystemService(ALARM_SERVICE);
+
         finalminute = minute;
+        cal.set(cal.HOUR_OF_DAY,finalhour);
+        cal.set(cal.MINUTE,finalminute);
+        cal.set(cal.SECOND, cal.SECOND + 3);
 
-        if(finalhour > 12)
-            finalhour = finalhour - 12;
+        Toast.makeText(this,"Time set for: " + finalhour + " " + finalminute,Toast.LENGTH_LONG).show();
 
-      //  Calendar cal = Calendar.getInstance();
-      //  cal.setTimeInMillis(System.currentTimeMillis());
+        am.set(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), pendingIntent);
+
+        am.setRepeating(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(),604800000,pendingIntent);
+
+    }
 
 
-
-
-       // cal.set(cal.DAY_OF_WEEK,cal.MONDAY);
-        //cal.set(cal.SECOND, cal.SECOND + 1);
-
-        //Intent myintent = new Intent(getBaseContext(), Alarm.class);
-        //PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(),0, myintent,0);
-       // AlarmManager am = (AlarmManager)getSystemService(ALARM_SERVICE);
-      //  am.set(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), pendingIntent);
-
-       // am.setRepeating(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), AlarmManager.INTERVAL_DAY * 7,pendingIntent); //repeats every week
-        Toast.makeText(this,"Time set for: "+ finalyear + " " + finalmonth + " " + finalday + " " + finalhour + " " + finalminute,Toast.LENGTH_LONG).show();
+    public void dothis(){
 
     }
 

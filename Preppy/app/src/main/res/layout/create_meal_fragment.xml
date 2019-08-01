@@ -251,7 +251,7 @@
             app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toEndOf="@+id/proteinLabel"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.753"
+            app:layout_constraintVertical_bias="0.69"
             tools:ignore="MissingConstraints" />
 
         <TextView
@@ -267,7 +267,7 @@
             app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toEndOf="@+id/proteinLabel"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.812"
+            app:layout_constraintVertical_bias="0.743"
             tools:ignore="MissingConstraints" />
 
         <TextView
@@ -283,7 +283,7 @@
             app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toEndOf="@+id/proteinLabel"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.862"
+            app:layout_constraintVertical_bias="0.793"
             tools:ignore="MissingConstraints" />
 
     </android.support.constraint.ConstraintLayout>
